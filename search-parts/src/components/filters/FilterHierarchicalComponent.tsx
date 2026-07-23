@@ -808,15 +808,7 @@ export class FilterHierarchicalComponent extends React.Component<IFilterHierarch
                 data-instance-id={this.props.instanceId}
                 data-theme-variant={this.props.themeVariant ? 'true' : 'false'}
             >
-                <div className={styles.searchContainer}>
-                    <input
-                        type="text"
-                        placeholder={strings.Filters.SearchPlaceholder}
-                        defaultValue=""
-                        onChange={this.onSearchChange}
-                        className={styles.searchInput}
-                    />
-                </div>
+            
                 {selectedHierarchyTerms.length > 0 && (
                     <div className={styles.selectedTermsContainer}>
                         {selectedHierarchyTerms.map(selectedTerm => (

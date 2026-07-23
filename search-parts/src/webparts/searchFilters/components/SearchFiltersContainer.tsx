@@ -133,7 +133,7 @@ export default class SearchFiltersContainer extends React.Component<ISearchFilte
             const termObj: IHierarchicalTerm = {
                 id: term.Id,
                 name: term.Name,
-                label: this.resolveFilterDisplayName(rawTermLabel, term.Name),
+                label: rawTermLabel,
                 parentId: term.ParentId,
                 pathOfTerm: path,
                 children: []
