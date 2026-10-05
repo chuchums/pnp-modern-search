@@ -80,6 +80,7 @@ define([], function () {
             FilterBackgroundColorLabel: "Filter baggrundsfarve",
             FilterBorderColorLabel: "Filter kantfarve",
             FilterBorderThicknessLabel: "Filter kanttykkelse",
+            FilterFontColorLabel: "Filterets skriftfarve",
             ResetToDefaultLabel: "Gendan til standardstil",
             ResetToDefaultDescription: "Gendan alle stilmuligheder til deres standardværdier"
         }

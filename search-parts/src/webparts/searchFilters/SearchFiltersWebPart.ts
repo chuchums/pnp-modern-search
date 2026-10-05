@@ -368,6 +368,7 @@ export default class SearchFiltersWebPart extends BaseWebPart<ISearchFiltersWebP
                         filterBackgroundColor: this.properties.filterBackgroundColor,
                         filterBorderColor: this.properties.filterBorderColor,
                         filterBorderThickness: this.properties.filterBorderThickness,
+                        filterFontColor: this.properties.filterFontColor,
                         titleFont: this.properties.titleFont,
                         titleFontSize: this.properties.titleFontSize,
                         titleFontColor: this.properties.titleFontColor
@@ -795,6 +796,18 @@ export default class SearchFiltersWebPart extends BaseWebPart<ISearchFiltersWebP
                     alphaSliderHidden: false,
                     style: this._basePropertyFieldColorPickerStyle.Inline,
                     key: 'filterBorderColorFieldId'
+                }),
+                this._basePropertyFieldColorPicker('filterFontColor', {
+                    label: webPartStrings.Styling.FilterFontColorLabel,
+                    selectedColor: this.properties.filterFontColor,
+                    onPropertyChange: this.onPropertyPaneFieldChanged,
+                    properties: this.properties,
+                    disabled: false,
+                    debounce: 1000,
+                    isHidden: false,
+                    alphaSliderHidden: false,
+                    style: this._basePropertyFieldColorPickerStyle.Inline,
+                    key: 'filterFontColorFieldId'
                 }),
                 PropertyPaneSlider('filterBorderThickness', {
                     label: webPartStrings.Styling.FilterBorderThicknessLabel,
@@ -1787,6 +1800,7 @@ export default class SearchFiltersWebPart extends BaseWebPart<ISearchFiltersWebP
         this.properties.filterBackgroundColor = undefined;
         this.properties.filterBorderColor = undefined;
         this.properties.filterBorderThickness = undefined;
+        this.properties.filterFontColor = undefined;
 
         // Refresh the property pane to show the reset values
         this.context.propertyPane.refresh();

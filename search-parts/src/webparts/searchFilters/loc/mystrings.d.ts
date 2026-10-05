@@ -81,6 +81,7 @@ declare interface ISearchFiltersWebPartStrings {
         FilterBackgroundColorLabel: string;
         FilterBorderColorLabel: string;
         FilterBorderThicknessLabel: string;
+        FilterFontColorLabel: string;
         ResetToDefaultLabel: string;
         ResetToDefaultDescription: string;
     }

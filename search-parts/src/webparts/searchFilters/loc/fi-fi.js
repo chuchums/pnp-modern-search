@@ -80,6 +80,7 @@ define([], function () {
             FilterBackgroundColorLabel: "Suodattimen taustav\u00e4ri",
             FilterBorderColorLabel: "Suodattimen reunav\u00e4ri",
             FilterBorderThicknessLabel: "Suodattimen reunan paksuus",
+            FilterFontColorLabel: "Suodattimen fonttiväri",
             ResetToDefaultLabel: "Palauta oletustyyli",
             ResetToDefaultDescription: "Palauta kaikki tyyliasetukset oletusarvoihinsa"
         }

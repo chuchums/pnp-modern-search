@@ -82,6 +82,7 @@ define([], function () {
             FilterBackgroundColorLabel: "Couleur d'arrière-plan du filtre",
             FilterBorderColorLabel: "Couleur de bordure du filtre",
             FilterBorderThicknessLabel: "Épaisseur de bordure du filtre",
+            FilterFontColorLabel: "Couleur de la police des filtres",
             ResetToDefaultLabel: "Réinitialiser le style par défaut",
             ResetToDefaultDescription: "Réinitialiser toutes les options de style à leurs valeurs par défaut"
         }

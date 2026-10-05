@@ -80,6 +80,7 @@ define([], function () {
             FilterBackgroundColorLabel: "Barva pozadí filtru",
             FilterBorderColorLabel: "Barva okraje filtru",
             FilterBorderThicknessLabel: "Tloušťka okraje filtru",
+            FilterFontColorLabel: "Barva písma filtru",
             ResetToDefaultLabel: "Obnovit výchozí styl",
             ResetToDefaultDescription: "Obnovit všechny možnosti stylu na výchozí hodnoty"
         }

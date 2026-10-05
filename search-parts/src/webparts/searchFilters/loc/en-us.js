@@ -82,6 +82,7 @@ define([], function () {
             FilterBackgroundColorLabel: "Filter Background Color",
             FilterBorderColorLabel: "Filter Border Color",
             FilterBorderThicknessLabel: "Filter Border Thickness",
+            FilterFontColorLabel: "Filter Font Color",
             ResetToDefaultLabel: "Reset to Default",
             ResetToDefaultDescription: "Reset all content styling options to their default values"
         }

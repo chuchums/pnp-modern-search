@@ -1326,9 +1326,45 @@ export default class SearchFiltersContainer extends React.Component<ISearchFilte
             cursor: this.state.isUpdatingResults ? 'progress' : 'default'
         };
 
-        return <div ref={this.componentRef} data-instance-id={this.props.instanceId} style={containerStyles} onPointerDownCapture={this.primeBusyCursorFromInteraction}>
+        // Only allow hex and rgb/rgba color values to avoid breaking out of the CSS context
+        const safeFilterFontColor = /^(#[0-9a-fA-F]{3,8}|rgba?\([\d\s,.]+\))$/.test(this.props.filterFontColor || '') ? this.props.filterFontColor : '';
+        const filtersWrapperClass = `custom-filters-wrapper-${this.props.instanceId || 'default'}`;
+
+        // The 'Panel' layout renders its content through a Fluent UI Layer, i.e. in a portal attached to
+        // document.body and therefore outside of this component's DOM subtree. The panel body still carries
+        // the '<TEMPLATE_ID_PREFIX><instanceId>' id from the layout template, so it is targeted separately.
+        const safeInstanceId = (this.props.instanceId || '').replace(/[^A-Za-z0-9_-]/g, '');
+        const filterScopes = [`.${filtersWrapperClass} .pnp-filters-content`];
+        if (safeInstanceId) {
+            filterScopes.push(`[id="${this.props.templateService.TEMPLATE_ID_PREFIX}${safeInstanceId}"]`);
+        }
+
+        // The Fluent UI controls used by the filter layouts (checkboxes, choice groups, links, buttons)
+        // set their own text color, so the value has to be forced on the whole subtree.
+        const filtersColorSelectors = filterScopes.map(scope => `${scope},\n            ${scope} *`).join(',\n            ');
+
+        // Checkbox squares and radio circles get their outline from a border (a pseudo-element for radios),
+        // which 'color' does not reach, so the same value is applied to their border color.
+        const filtersBorderSelectors = filterScopes.map(scope => [
+            `${scope} .ms-Checkbox-checkbox`,
+            `${scope} .ms-ChoiceField-field::before`
+        ].join(',\n            ')).join(',\n            ');
+
+        const filtersStyleString = safeFilterFontColor ? `
+            ${filtersColorSelectors} {
+                color: ${safeFilterFontColor} !important;
+            }
+            ${filtersBorderSelectors} {
+                border-color: ${safeFilterFontColor} !important;
+            }
+        ` : null;
+
+        return <div ref={this.componentRef} data-instance-id={this.props.instanceId} className={filtersWrapperClass} style={containerStyles} onPointerDownCapture={this.primeBusyCursorFromInteraction}>
+            {filtersStyleString && <style key={`filters-style-${safeFilterFontColor}`}>{filtersStyleString}</style>}
             {renderTitle}
-            {renderWpContent}
+            <div className="pnp-filters-content" style={{ display: 'contents' }}>
+                {renderWpContent}
+            </div>
         </div>;
     }
 
