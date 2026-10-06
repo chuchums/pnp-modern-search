@@ -1,0 +1,241 @@
+<!--
+    Portail GED ADS : Piste C, tuiles panorama
+    Tuiles immersives, titre en capitales condensées sur dégradé marine.
+    Layout PnP Modern Search v4 « Personnalisé ». Le nom du site (SiteTitle) n'est plus affiché.
+-->
+<content id="data-content">
+    <style>
+        /* ---- Thème ADS : socle commun (copié dans chaque template) ---- */
+        /* Police titrage : héberger Bebas Neue dans SiteAssets puis décommenter.
+        @font-face { font-family: "Bebas Neue"; src: url("/sites/GED/SiteAssets/fonts/BebasNeue-Regular.woff2") format("woff2"); font-display: swap; }
+        */
+        .ads-results {
+            --ads-navy: #002B5C;
+            --ads-navy-2: #0B3C74;
+            --ads-ice: #A9CDEE;
+            --ads-ice-soft: #EAF2FB;
+            --ads-snow: #F6F9FC;
+            --ads-ink: #14243A;
+            --ads-muted: #5A6B80;
+            --ads-line: #DCE5EF;
+            --ads-display: "Bebas Neue", "Bahnschrift SemiBold Condensed", "Bahnschrift", "Arial Narrow", sans-serif;
+            --ads-text: "Segoe UI", "Segoe UI Web (West European)", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            font-family: var(--ads-text);
+            color: var(--ads-ink);
+        }
+        .ads-results *, .ads-results *::before, .ads-results *::after { box-sizing: border-box; }
+        
+        /* En-tête : compteur + tri */
+        .ads-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px; margin: 0 0 20px; padding-bottom: 12px; border-bottom: 2px solid var(--ads-navy); }
+        .ads-count { font-family: var(--ads-display); font-stretch: condensed; font-size: 30px; line-height: 1; letter-spacing: .02em; text-transform: uppercase; color: var(--ads-navy); }
+        .ads-tools { display: flex; align-items: center; gap: 12px; }
+        
+        /* Badge type de fichier */
+        .ads-ft { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; font: 700 11px/1 var(--ads-text); letter-spacing: .08em; text-transform: uppercase; color: #fff; background: var(--ads-navy); }
+        .ads-ft[data-ft^="doc"] { background: #185ABD; }
+        .ads-ft[data-ft^="ppt"] { background: #C43E1C; }
+        .ads-ft[data-ft^="xls"] { background: #107C41; }
+        .ads-ft[data-ft="pdf"]  { background: #B7312C; }
+        
+        /* Étiquettes : codes processus (PR01…) en marine, le reste en bleu glacier */
+        .ads-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+        .ads-chip { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; font-size: 12px; font-weight: 600; white-space: nowrap; color: var(--ads-navy); background: var(--ads-ice-soft); border-radius: 2px; }
+        .ads-chip--code { font-family: var(--ads-display); font-stretch: condensed; font-weight: 400; font-size: 15px; letter-spacing: .04em; color: #fff; background: var(--ads-navy); }
+        
+        /* Auteur */
+        .ads-author { display: flex; align-items: center; gap: 10px; min-width: 0; font-size: 13px; color: var(--ads-muted); }
+        .ads-author img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; flex: none; background: var(--ads-ice-soft); }
+        .ads-author strong { display: block; font-weight: 600; color: var(--ads-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        /* Chargement */
+        @keyframes ads-shimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
+        .ads-skel { background: linear-gradient(90deg, var(--ads-ice-soft) 0, #fff 50%, var(--ads-ice-soft) 100%); background-size: 800px 100%; animation: ads-shimmer 1.4s linear infinite; }
+        @media (prefers-reduced-motion: reduce) { .ads-results * { transition: none !important; animation: none !important; } }
+        /* C : Tuiles panorama */
+        .ads-paging { margin-top: 28px; }
+        .adsC-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+        .adsC-tile { position: relative; display: block; aspect-ratio: 4 / 5; overflow: hidden; text-decoration: none; color: #fff; background: var(--ads-navy); isolation: isolate; }
+        .adsC-tile img, .adsC-tile .ads-noimg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top center; z-index: -2; transition: transform .6s ease; }
+        .adsC-tile .ads-noimg { background: linear-gradient(160deg, var(--ads-navy-2), var(--ads-navy)); }
+        .adsC-tile::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(0,43,92,.05) 0%, rgba(0,43,92,.25) 30%, rgba(0,43,92,.9) 55%, rgba(0,43,92,.98) 100%); transition: opacity .3s ease; }
+        .adsC-tile:hover img, .adsC-tile:focus-visible img { transform: scale(1.06); }
+        .adsC-tile:focus-visible { outline: 3px solid var(--ads-ice); outline-offset: 2px; }
+        .adsC-tile .ads-ft { position: absolute; top: 14px; left: 14px; }
+        .adsC-body { position: absolute; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; gap: 12px; padding: 18px; }
+        .adsC-title { margin: 0; font-family: var(--ads-display); font-stretch: condensed; font-weight: 400; font-size: 30px; line-height: .98; letter-spacing: .01em; text-transform: uppercase; text-wrap: balance; overflow-wrap: anywhere; color: #fff; }
+        .adsC-body .ads-chip { height: 20px; font-size: 11px; color: var(--ads-navy); background: var(--ads-ice); }
+        .adsC-body .ads-chip--code { font-size: 14px; color: #fff; background: transparent; border: 1px solid rgba(255,255,255,.55); }
+        .adsC-body .ads-chips { max-height: 46px; overflow: hidden; }
+        .adsC-body .ads-author { color: rgba(255,255,255,.75); max-height: 0; opacity: 0; transition: max-height .3s ease, opacity .3s ease; }
+        .adsC-body .ads-author strong { color: #fff; }
+        .adsC-tile:hover .ads-author, .adsC-tile:focus-visible .ads-author { max-height: 48px; opacity: 1; }
+        @media (hover: none) { .adsC-body .ads-author { max-height: none; opacity: 1; } }
+    </style>
+
+    <div class="ads-results">
+
+        {{#if @root.properties.showSelectedFilters}}
+            <pnp-selectedfilters
+                data-filters="{{JSONstringify filters.selectedFilters 2}}"
+                data-filters-configuration="{{JSONstringify filters.filtersConfiguration 2}}"
+                data-instance-id="{{filters.instanceId}}"
+                data-operator="{{filters.filterOperator}}"
+                data-theme-variant="{{JSONstringify @root.theme}}">
+            </pnp-selectedfilters>
+        {{/if}}
+
+        <div class="ads-head">
+            <div class="ads-count">
+                {{#if @root.properties.showResultsCount}}{{getCountMessage @root.data.totalItemsCount @root.inputQueryText}}{{/if}}
+            </div>
+            <div class="ads-tools">
+                {{#and properties.layoutProperties.enableDownload @root.properties.itemSelectionProps.allowItemSelection}}
+                    <pnp-download-selected-items-button
+                        data-items="{{JSONstringify data.items}}"
+                        data-context="{{JSONstringify (truncateContext @root)}}"
+                        data-theme-variant="{{JSONstringify @root.theme}}">
+                    </pnp-download-selected-items-button>
+                {{/and}}
+                <pnp-sortfield
+                    data-fields="{{JSONstringify @root.properties.dataSourceProperties.sortList}}"
+                    data-default-selected-field="{{sort.selectedSortFieldName}}"
+                    data-default-direction="{{sort.selectedSortDirection}}"
+                    data-theme-variant="{{JSONstringify @root.theme}}">
+                </pnp-sortfield>
+            </div>
+        </div>
+
+        <div class="adsC-grid">
+            {{#each data.items as |item|}}
+                {{#> resultTypes item=item}}
+                <a class="adsC-tile" href="{{slot item @root.slots.PreviewUrl}}" target="_blank" rel="noopener" data-interception="off">
+                    {{#if (slot item @root.slots.PreviewImageUrl)}}
+                            <img src="{{slot item @root.slots.PreviewImageUrl}}" alt="" loading="lazy">
+                        {{else}}
+                            <span class="ads-noimg"></span>
+                        {{/if}}
+                    <span class="ads-ft" data-ft="{{slot item @root.slots.FileType}}">{{slot item @root.slots.FileType}}</span>
+                    <div class="adsC-body">
+                        <h3 class="adsC-title">{{slot item @root.slots.Title}}</h3>
+                        {{#if (slot item @root.slots.Tags)}}
+                        <div class="ads-chips">
+                            {{#each (split (slot item @root.slots.Tags) ";") as |tag|}}
+                                {{#with (itemAt (split (trim tag) "|") -1) as |label|}}
+                                    {{#with (itemAt (split label " - ") 0) as |code|}}
+                                        {{#eq code label}}<span class="ads-chip">{{label}}</span>{{else}}<span class="ads-chip ads-chip--code" title="{{label}}">{{code}}</span>{{/eq}}
+                                    {{/with}}
+                                {{/with}}
+                            {{/each}}
+                        </div>
+                        {{/if}}
+                        {{#if (slot item @root.slots.Author)}}
+                        <div class="ads-author">
+                            <img src="/_layouts/15/userphoto.aspx?size=S&username={{getUserEmail (slot item @root.slots.Author)}}" alt="" loading="lazy">
+                            <span>
+                                <strong>{{#with (split (slot item @root.slots.Author) " | ") as |a|}}{{#if (itemAt a 1)}}{{itemAt a 1}}{{else}}{{itemAt a 0}}{{/if}}{{/with}}</strong>
+                                {{getDate (slot item @root.slots.Date) 'LL'}}
+                            </span>
+                        </div>
+                        {{/if}}
+                    </div>
+                </a>
+                {{/resultTypes}}
+            {{/each}}
+        </div>
+
+        {{#if @root.properties.paging.showPaging}}
+            {{#gt @root.data.totalItemsCount @root.properties.paging.itemsCountPerPage}}
+                <div class="ads-paging">
+                    <pnp-pagination
+                        data-total-items="{{@root.data.totalItemsCount}}"
+                        data-hide-first-last-pages="{{@root.properties.paging.hideFirstLastPages}}"
+                        data-hide-disabled="{{@root.properties.paging.hideDisabled}}"
+                        data-hide-navigation="{{@root.properties.paging.hideNavigation}}"
+                        data-range="{{@root.properties.paging.pagingRange}}"
+                        data-items-count-per-page="{{@root.properties.paging.itemsCountPerPage}}"
+                        data-current-page-number="{{@root.paging.currentPageNumber}}"
+                        data-theme-variant="{{JSONstringify @root.theme}}">
+                    </pnp-pagination>
+                </div>
+            {{/gt}}
+        {{/if}}
+    </div>
+</content>
+
+<content id="placeholder-content">
+    <style>
+        /* ---- Thème ADS : socle commun (copié dans chaque template) ---- */
+        /* Police titrage : héberger Bebas Neue dans SiteAssets puis décommenter.
+        @font-face { font-family: "Bebas Neue"; src: url("/sites/GED/SiteAssets/fonts/BebasNeue-Regular.woff2") format("woff2"); font-display: swap; }
+        */
+        .ads-results {
+            --ads-navy: #002B5C;
+            --ads-navy-2: #0B3C74;
+            --ads-ice: #A9CDEE;
+            --ads-ice-soft: #EAF2FB;
+            --ads-snow: #F6F9FC;
+            --ads-ink: #14243A;
+            --ads-muted: #5A6B80;
+            --ads-line: #DCE5EF;
+            --ads-display: "Bebas Neue", "Bahnschrift SemiBold Condensed", "Bahnschrift", "Arial Narrow", sans-serif;
+            --ads-text: "Segoe UI", "Segoe UI Web (West European)", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            font-family: var(--ads-text);
+            color: var(--ads-ink);
+        }
+        .ads-results *, .ads-results *::before, .ads-results *::after { box-sizing: border-box; }
+        
+        /* En-tête : compteur + tri */
+        .ads-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px; margin: 0 0 20px; padding-bottom: 12px; border-bottom: 2px solid var(--ads-navy); }
+        .ads-count { font-family: var(--ads-display); font-stretch: condensed; font-size: 30px; line-height: 1; letter-spacing: .02em; text-transform: uppercase; color: var(--ads-navy); }
+        .ads-tools { display: flex; align-items: center; gap: 12px; }
+        
+        /* Badge type de fichier */
+        .ads-ft { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; font: 700 11px/1 var(--ads-text); letter-spacing: .08em; text-transform: uppercase; color: #fff; background: var(--ads-navy); }
+        .ads-ft[data-ft^="doc"] { background: #185ABD; }
+        .ads-ft[data-ft^="ppt"] { background: #C43E1C; }
+        .ads-ft[data-ft^="xls"] { background: #107C41; }
+        .ads-ft[data-ft="pdf"]  { background: #B7312C; }
+        
+        /* Étiquettes : codes processus (PR01…) en marine, le reste en bleu glacier */
+        .ads-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+        .ads-chip { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; font-size: 12px; font-weight: 600; white-space: nowrap; color: var(--ads-navy); background: var(--ads-ice-soft); border-radius: 2px; }
+        .ads-chip--code { font-family: var(--ads-display); font-stretch: condensed; font-weight: 400; font-size: 15px; letter-spacing: .04em; color: #fff; background: var(--ads-navy); }
+        
+        /* Auteur */
+        .ads-author { display: flex; align-items: center; gap: 10px; min-width: 0; font-size: 13px; color: var(--ads-muted); }
+        .ads-author img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; flex: none; background: var(--ads-ice-soft); }
+        .ads-author strong { display: block; font-weight: 600; color: var(--ads-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        /* Chargement */
+        @keyframes ads-shimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
+        .ads-skel { background: linear-gradient(90deg, var(--ads-ice-soft) 0, #fff 50%, var(--ads-ice-soft) 100%); background-size: 800px 100%; animation: ads-shimmer 1.4s linear infinite; }
+        @media (prefers-reduced-motion: reduce) { .ads-results * { transition: none !important; animation: none !important; } }
+        /* C : Tuiles panorama */
+        .ads-paging { margin-top: 28px; }
+        .adsC-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+        .adsC-tile { position: relative; display: block; aspect-ratio: 4 / 5; overflow: hidden; text-decoration: none; color: #fff; background: var(--ads-navy); isolation: isolate; }
+        .adsC-tile img, .adsC-tile .ads-noimg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top center; z-index: -2; transition: transform .6s ease; }
+        .adsC-tile .ads-noimg { background: linear-gradient(160deg, var(--ads-navy-2), var(--ads-navy)); }
+        .adsC-tile::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(0,43,92,.05) 0%, rgba(0,43,92,.25) 30%, rgba(0,43,92,.9) 55%, rgba(0,43,92,.98) 100%); transition: opacity .3s ease; }
+        .adsC-tile:hover img, .adsC-tile:focus-visible img { transform: scale(1.06); }
+        .adsC-tile:focus-visible { outline: 3px solid var(--ads-ice); outline-offset: 2px; }
+        .adsC-tile .ads-ft { position: absolute; top: 14px; left: 14px; }
+        .adsC-body { position: absolute; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; gap: 12px; padding: 18px; }
+        .adsC-title { margin: 0; font-family: var(--ads-display); font-stretch: condensed; font-weight: 400; font-size: 30px; line-height: .98; letter-spacing: .01em; text-transform: uppercase; text-wrap: balance; overflow-wrap: anywhere; color: #fff; }
+        .adsC-body .ads-chip { height: 20px; font-size: 11px; color: var(--ads-navy); background: var(--ads-ice); }
+        .adsC-body .ads-chip--code { font-size: 14px; color: #fff; background: transparent; border: 1px solid rgba(255,255,255,.55); }
+        .adsC-body .ads-chips { max-height: 46px; overflow: hidden; }
+        .adsC-body .ads-author { color: rgba(255,255,255,.75); max-height: 0; opacity: 0; transition: max-height .3s ease, opacity .3s ease; }
+        .adsC-body .ads-author strong { color: #fff; }
+        .adsC-tile:hover .ads-author, .adsC-tile:focus-visible .ads-author { max-height: 48px; opacity: 1; }
+        @media (hover: none) { .adsC-body .ads-author { max-height: none; opacity: 1; } }
+    </style>
+    <div class="ads-results">
+        <div class="ads-head"><span class="ads-skel" style="display:block;width:160px;height:28px"></span></div>
+        <div class="adsC-grid">
+            {{#times @root.properties.paging.itemsCountPerPage}}
+                <div class="adsC-tile ads-skel"></div>
+            {{/times}}
+        </div>
+    </div>
+</content>

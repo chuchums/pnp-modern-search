@@ -1,0 +1,248 @@
+<!--
+    Portail GED ADS : Piste B, liste éditoriale
+    Liste dense avec extrait surligné : idéale pour une recherche plein texte.
+    Layout PnP Modern Search v4 « Personnalisé ». Le nom du site (SiteTitle) n'est plus affiché.
+-->
+<content id="data-content">
+    <style>
+        /* ---- Thème ADS : socle commun (copié dans chaque template) ---- */
+        /* Police titrage : héberger Bebas Neue dans SiteAssets puis décommenter.
+        @font-face { font-family: "Bebas Neue"; src: url("/sites/GED/SiteAssets/fonts/BebasNeue-Regular.woff2") format("woff2"); font-display: swap; }
+        */
+        .ads-results {
+            --ads-navy: #002B5C;
+            --ads-navy-2: #0B3C74;
+            --ads-ice: #A9CDEE;
+            --ads-ice-soft: #EAF2FB;
+            --ads-snow: #F6F9FC;
+            --ads-ink: #14243A;
+            --ads-muted: #5A6B80;
+            --ads-line: #DCE5EF;
+            --ads-display: "Bebas Neue", "Bahnschrift SemiBold Condensed", "Bahnschrift", "Arial Narrow", sans-serif;
+            --ads-text: "Segoe UI", "Segoe UI Web (West European)", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            font-family: var(--ads-text);
+            color: var(--ads-ink);
+        }
+        .ads-results *, .ads-results *::before, .ads-results *::after { box-sizing: border-box; }
+        
+        /* En-tête : compteur + tri */
+        .ads-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px; margin: 0 0 20px; padding-bottom: 12px; border-bottom: 2px solid var(--ads-navy); }
+        .ads-count { font-family: var(--ads-display); font-stretch: condensed; font-size: 30px; line-height: 1; letter-spacing: .02em; text-transform: uppercase; color: var(--ads-navy); }
+        .ads-tools { display: flex; align-items: center; gap: 12px; }
+        
+        /* Badge type de fichier */
+        .ads-ft { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; font: 700 11px/1 var(--ads-text); letter-spacing: .08em; text-transform: uppercase; color: #fff; background: var(--ads-navy); }
+        .ads-ft[data-ft^="doc"] { background: #185ABD; }
+        .ads-ft[data-ft^="ppt"] { background: #C43E1C; }
+        .ads-ft[data-ft^="xls"] { background: #107C41; }
+        .ads-ft[data-ft="pdf"]  { background: #B7312C; }
+        
+        /* Étiquettes : codes processus (PR01…) en marine, le reste en bleu glacier */
+        .ads-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+        .ads-chip { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; font-size: 12px; font-weight: 600; white-space: nowrap; color: var(--ads-navy); background: var(--ads-ice-soft); border-radius: 2px; }
+        .ads-chip--code { font-family: var(--ads-display); font-stretch: condensed; font-weight: 400; font-size: 15px; letter-spacing: .04em; color: #fff; background: var(--ads-navy); }
+        
+        /* Auteur */
+        .ads-author { display: flex; align-items: center; gap: 10px; min-width: 0; font-size: 13px; color: var(--ads-muted); }
+        .ads-author img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; flex: none; background: var(--ads-ice-soft); }
+        .ads-author strong { display: block; font-weight: 600; color: var(--ads-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        /* Chargement */
+        @keyframes ads-shimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
+        .ads-skel { background: linear-gradient(90deg, var(--ads-ice-soft) 0, #fff 50%, var(--ads-ice-soft) 100%); background-size: 800px 100%; animation: ads-shimmer 1.4s linear infinite; }
+        @media (prefers-reduced-motion: reduce) { .ads-results * { transition: none !important; animation: none !important; } }
+        /* B : Liste éditoriale */
+        .ads-paging { margin-top: 24px; }
+        .adsB-list { display: flex; flex-direction: column; border-top: 1px solid var(--ads-line); }
+        .adsB-row { display: grid; grid-template-columns: 132px minmax(0, 1fr) 200px; gap: 20px; align-items: start; padding: 18px 14px; text-decoration: none; color: inherit; border-bottom: 1px solid var(--ads-line); transition: background-color .15s ease; }
+        .adsB-row:hover, .adsB-row:focus-visible { background: var(--ads-snow); outline: none; }
+        .adsB-thumb { position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: var(--ads-snow); border: 1px solid var(--ads-line); }
+        .adsB-thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+        .adsB-thumb .ads-noimg { position: absolute; inset: 0; background: linear-gradient(160deg, var(--ads-ice-soft), var(--ads-ice)); }
+        .adsB-thumb .ads-ft { position: absolute; left: 0; top: 0; height: 18px; font-size: 10px; padding: 0 6px; }
+        .adsB-main { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+        .adsB-title { margin: 0; overflow-wrap: anywhere; font-size: 19px; font-weight: 600; line-height: 1.25; color: var(--ads-navy); }
+        .adsB-row:hover .adsB-title { text-decoration: underline; text-decoration-color: var(--ads-ice); text-decoration-thickness: 3px; text-underline-offset: 4px; }
+        .adsB-summary { margin: 0; font-size: 14px; line-height: 1.5; color: var(--ads-muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .adsB-summary strong { font-weight: 600; color: var(--ads-ink); background: linear-gradient(transparent 55%, var(--ads-ice) 55%); }
+        .adsB-main .ads-chip--code { order: -1; }
+        .adsB-side { padding-top: 2px; }
+        @media (max-width: 720px) {
+            .adsB-row { grid-template-columns: 88px minmax(0, 1fr); }
+            .adsB-side { grid-column: 2; }
+        }
+    </style>
+
+    <div class="ads-results">
+
+        {{#if @root.properties.showSelectedFilters}}
+            <pnp-selectedfilters
+                data-filters="{{JSONstringify filters.selectedFilters 2}}"
+                data-filters-configuration="{{JSONstringify filters.filtersConfiguration 2}}"
+                data-instance-id="{{filters.instanceId}}"
+                data-operator="{{filters.filterOperator}}"
+                data-theme-variant="{{JSONstringify @root.theme}}">
+            </pnp-selectedfilters>
+        {{/if}}
+
+        <div class="ads-head">
+            <div class="ads-count">
+                {{#if @root.properties.showResultsCount}}{{getCountMessage @root.data.totalItemsCount @root.inputQueryText}}{{/if}}
+            </div>
+            <div class="ads-tools">
+                {{#and properties.layoutProperties.enableDownload @root.properties.itemSelectionProps.allowItemSelection}}
+                    <pnp-download-selected-items-button
+                        data-items="{{JSONstringify data.items}}"
+                        data-context="{{JSONstringify (truncateContext @root)}}"
+                        data-theme-variant="{{JSONstringify @root.theme}}">
+                    </pnp-download-selected-items-button>
+                {{/and}}
+                <pnp-sortfield
+                    data-fields="{{JSONstringify @root.properties.dataSourceProperties.sortList}}"
+                    data-default-selected-field="{{sort.selectedSortFieldName}}"
+                    data-default-direction="{{sort.selectedSortDirection}}"
+                    data-theme-variant="{{JSONstringify @root.theme}}">
+                </pnp-sortfield>
+            </div>
+        </div>
+
+        <div class="adsB-list">
+            {{#each data.items as |item|}}
+                {{#> resultTypes item=item}}
+                <a class="adsB-row" href="{{slot item @root.slots.PreviewUrl}}" target="_blank" rel="noopener" data-interception="off">
+                    <div class="adsB-thumb">
+                        {{#if (slot item @root.slots.PreviewImageUrl)}}
+                            <img src="{{slot item @root.slots.PreviewImageUrl}}" alt="" loading="lazy">
+                        {{else}}
+                            <span class="ads-noimg"></span>
+                        {{/if}}
+                        <span class="ads-ft" data-ft="{{slot item @root.slots.FileType}}">{{slot item @root.slots.FileType}}</span>
+                    </div>
+                    <div class="adsB-main">
+                        <h3 class="adsB-title">{{slot item @root.slots.Title}}</h3>
+                        {{#if (slot item @root.slots.Summary)}}<p class="adsB-summary">{{getSummary (slot item @root.slots.Summary)}}</p>{{/if}}
+                        {{#if (slot item @root.slots.Tags)}}
+                        <div class="ads-chips">
+                            {{#each (split (slot item @root.slots.Tags) ";") as |tag|}}
+                                {{#with (itemAt (split (trim tag) "|") -1) as |label|}}
+                                    {{#with (itemAt (split label " - ") 0) as |code|}}
+                                        {{#eq code label}}<span class="ads-chip">{{label}}</span>{{else}}<span class="ads-chip ads-chip--code" title="{{label}}">{{code}}</span>{{/eq}}
+                                    {{/with}}
+                                {{/with}}
+                            {{/each}}
+                        </div>
+                        {{/if}}
+                    </div>
+                    <div class="adsB-side">
+                        {{#if (slot item @root.slots.Author)}}
+                        <div class="ads-author">
+                            <img src="/_layouts/15/userphoto.aspx?size=S&username={{getUserEmail (slot item @root.slots.Author)}}" alt="" loading="lazy">
+                            <span>
+                                <strong>{{#with (split (slot item @root.slots.Author) " | ") as |a|}}{{#if (itemAt a 1)}}{{itemAt a 1}}{{else}}{{itemAt a 0}}{{/if}}{{/with}}</strong>
+                                {{getDate (slot item @root.slots.Date) 'LL'}}
+                            </span>
+                        </div>
+                        {{/if}}
+                    </div>
+                </a>
+                {{/resultTypes}}
+            {{/each}}
+        </div>
+
+        {{#if @root.properties.paging.showPaging}}
+            {{#gt @root.data.totalItemsCount @root.properties.paging.itemsCountPerPage}}
+                <div class="ads-paging">
+                    <pnp-pagination
+                        data-total-items="{{@root.data.totalItemsCount}}"
+                        data-hide-first-last-pages="{{@root.properties.paging.hideFirstLastPages}}"
+                        data-hide-disabled="{{@root.properties.paging.hideDisabled}}"
+                        data-hide-navigation="{{@root.properties.paging.hideNavigation}}"
+                        data-range="{{@root.properties.paging.pagingRange}}"
+                        data-items-count-per-page="{{@root.properties.paging.itemsCountPerPage}}"
+                        data-current-page-number="{{@root.paging.currentPageNumber}}"
+                        data-theme-variant="{{JSONstringify @root.theme}}">
+                    </pnp-pagination>
+                </div>
+            {{/gt}}
+        {{/if}}
+    </div>
+</content>
+
+<content id="placeholder-content">
+    <style>
+        /* ---- Thème ADS : socle commun (copié dans chaque template) ---- */
+        /* Police titrage : héberger Bebas Neue dans SiteAssets puis décommenter.
+        @font-face { font-family: "Bebas Neue"; src: url("/sites/GED/SiteAssets/fonts/BebasNeue-Regular.woff2") format("woff2"); font-display: swap; }
+        */
+        .ads-results {
+            --ads-navy: #002B5C;
+            --ads-navy-2: #0B3C74;
+            --ads-ice: #A9CDEE;
+            --ads-ice-soft: #EAF2FB;
+            --ads-snow: #F6F9FC;
+            --ads-ink: #14243A;
+            --ads-muted: #5A6B80;
+            --ads-line: #DCE5EF;
+            --ads-display: "Bebas Neue", "Bahnschrift SemiBold Condensed", "Bahnschrift", "Arial Narrow", sans-serif;
+            --ads-text: "Segoe UI", "Segoe UI Web (West European)", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            font-family: var(--ads-text);
+            color: var(--ads-ink);
+        }
+        .ads-results *, .ads-results *::before, .ads-results *::after { box-sizing: border-box; }
+        
+        /* En-tête : compteur + tri */
+        .ads-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px; margin: 0 0 20px; padding-bottom: 12px; border-bottom: 2px solid var(--ads-navy); }
+        .ads-count { font-family: var(--ads-display); font-stretch: condensed; font-size: 30px; line-height: 1; letter-spacing: .02em; text-transform: uppercase; color: var(--ads-navy); }
+        .ads-tools { display: flex; align-items: center; gap: 12px; }
+        
+        /* Badge type de fichier */
+        .ads-ft { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; font: 700 11px/1 var(--ads-text); letter-spacing: .08em; text-transform: uppercase; color: #fff; background: var(--ads-navy); }
+        .ads-ft[data-ft^="doc"] { background: #185ABD; }
+        .ads-ft[data-ft^="ppt"] { background: #C43E1C; }
+        .ads-ft[data-ft^="xls"] { background: #107C41; }
+        .ads-ft[data-ft="pdf"]  { background: #B7312C; }
+        
+        /* Étiquettes : codes processus (PR01…) en marine, le reste en bleu glacier */
+        .ads-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+        .ads-chip { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; font-size: 12px; font-weight: 600; white-space: nowrap; color: var(--ads-navy); background: var(--ads-ice-soft); border-radius: 2px; }
+        .ads-chip--code { font-family: var(--ads-display); font-stretch: condensed; font-weight: 400; font-size: 15px; letter-spacing: .04em; color: #fff; background: var(--ads-navy); }
+        
+        /* Auteur */
+        .ads-author { display: flex; align-items: center; gap: 10px; min-width: 0; font-size: 13px; color: var(--ads-muted); }
+        .ads-author img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; flex: none; background: var(--ads-ice-soft); }
+        .ads-author strong { display: block; font-weight: 600; color: var(--ads-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        /* Chargement */
+        @keyframes ads-shimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
+        .ads-skel { background: linear-gradient(90deg, var(--ads-ice-soft) 0, #fff 50%, var(--ads-ice-soft) 100%); background-size: 800px 100%; animation: ads-shimmer 1.4s linear infinite; }
+        @media (prefers-reduced-motion: reduce) { .ads-results * { transition: none !important; animation: none !important; } }
+        /* B : Liste éditoriale */
+        .ads-paging { margin-top: 24px; }
+        .adsB-list { display: flex; flex-direction: column; border-top: 1px solid var(--ads-line); }
+        .adsB-row { display: grid; grid-template-columns: 132px minmax(0, 1fr) 200px; gap: 20px; align-items: start; padding: 18px 14px; text-decoration: none; color: inherit; border-bottom: 1px solid var(--ads-line); transition: background-color .15s ease; }
+        .adsB-row:hover, .adsB-row:focus-visible { background: var(--ads-snow); outline: none; }
+        .adsB-thumb { position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: var(--ads-snow); border: 1px solid var(--ads-line); }
+        .adsB-thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+        .adsB-thumb .ads-noimg { position: absolute; inset: 0; background: linear-gradient(160deg, var(--ads-ice-soft), var(--ads-ice)); }
+        .adsB-thumb .ads-ft { position: absolute; left: 0; top: 0; height: 18px; font-size: 10px; padding: 0 6px; }
+        .adsB-main { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+        .adsB-title { margin: 0; overflow-wrap: anywhere; font-size: 19px; font-weight: 600; line-height: 1.25; color: var(--ads-navy); }
+        .adsB-row:hover .adsB-title { text-decoration: underline; text-decoration-color: var(--ads-ice); text-decoration-thickness: 3px; text-underline-offset: 4px; }
+        .adsB-summary { margin: 0; font-size: 14px; line-height: 1.5; color: var(--ads-muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .adsB-summary strong { font-weight: 600; color: var(--ads-ink); background: linear-gradient(transparent 55%, var(--ads-ice) 55%); }
+        .adsB-main .ads-chip--code { order: -1; }
+        .adsB-side { padding-top: 2px; }
+        @media (max-width: 720px) {
+            .adsB-row { grid-template-columns: 88px minmax(0, 1fr); }
+            .adsB-side { grid-column: 2; }
+        }
+    </style>
+    <div class="ads-results">
+        <div class="ads-head"><span class="ads-skel" style="display:block;width:160px;height:28px"></span></div>
+        <div class="adsB-list">
+            {{#times @root.properties.paging.itemsCountPerPage}}
+                <div class="adsB-row"><div class="adsB-thumb ads-skel"></div><div class="adsB-main"><span class="ads-skel" style="height:18px;width:60%"></span><span class="ads-skel" style="height:14px;width:90%"></span></div><div></div></div>
+            {{/times}}
+        </div>
+    </div>
+</content>
