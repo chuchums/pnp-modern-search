@@ -160,7 +160,7 @@
                                             </pnp-filtercombobox>
                                         </div>
                                 {{else}}
-                                    <pnp-collapsible data-group-name="{{filter.displayName}}" data-group-storage-key="{{@root.instanceId}}::{{filter.filterName}}" data-show-warning-marker="{{filter.showWarningMarker}}" data-warning-marker-tooltip="{{filter.warningMarkerTooltipText}}" data-default-collapsed="{{#or filter.hasSelectedValues filter.expandByDefault}}false{{else}}true{{/or}}" data-theme-variant="{{JSONstringify @root.theme}}">
+                                    <pnp-collapsible data-group-name="{{filter.displayName}}" data-group-storage-key="{{@root.instanceId}}::{{filter.filterName}}" data-show-warning-marker="{{filter.showWarningMarker}}" data-warning-marker-tooltip="{{filter.warningMarkerTooltipText}}" data-default-collapsed="{{#or filter.hasSelectedValues filter.expandByDefault}}false{{else}}true{{/or}}" data-force-expanded="{{#if filter.hasSelectedValues}}true{{else}}false{{/if}}" data-theme-variant="{{JSONstringify @root.theme}}">
                                             
                                         <template id="collapsible-content" item-class="filter--value">
                 

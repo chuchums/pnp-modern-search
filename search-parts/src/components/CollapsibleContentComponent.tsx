@@ -26,6 +26,12 @@ export interface ICollapsibleContentComponentProps {
     defaultCollapsed?: boolean;
 
     /**
+     * If true, the group is always expanded on render, regardless of the collapsed state
+     * persisted in session storage (e.g. a refiner that has at least one selected value).
+     */
+    forceExpanded?: boolean | string;
+
+    /**
      * Content of the header template
      */
     headerTemplate?: string;
@@ -81,9 +87,12 @@ export class CollapsibleContentComponent extends React.Component<ICollapsibleCon
         const storedState = sessionStorage.getItem(this.storageKey);
         const defaultCollapsed = this.getNormalizedDefaultCollapsed(props.defaultCollapsed);
         
-        const initialCollapsedState = storedState
-            ? JSON.parse(storedState)
-            : !!defaultCollapsed;
+        // A group with selected values is always opened, whatever the persisted state is
+        const initialCollapsedState = this.isForceExpanded(props.forceExpanded)
+            ? false
+            : storedState
+                ? JSON.parse(storedState)
+                : !!defaultCollapsed;
         
         this.state = {
             isCollapsed: initialCollapsedState,
@@ -111,8 +120,19 @@ export class CollapsibleContentComponent extends React.Component<ICollapsibleCon
         }
     }
 
-    public componentDidUpdate(): void {
-        // Keep user-controlled collapse state; do not force open on parent refresh.
+    public componentDidUpdate(prevProps: ICollapsibleContentComponentProps): void {
+        // Keep user-controlled collapse state on parent refresh, except when the group
+        // just received a selected value: in that case open it automatically.
+        const wasForceExpanded = this.isForceExpanded(prevProps.forceExpanded);
+        const isForceExpanded = this.isForceExpanded(this.props.forceExpanded);
+
+        if (!wasForceExpanded && isForceExpanded && this.state.isCollapsed) {
+            this.setState({ isCollapsed: false });
+        }
+    }
+
+    private isForceExpanded(forceExpanded: boolean | string | undefined): boolean {
+        return forceExpanded === true || forceExpanded === 'true';
     }
 
     private getNormalizedDefaultCollapsed(defaultCollapsed: boolean | string | undefined): boolean | undefined {
@@ -371,8 +391,16 @@ export class CollapsibleContentWebComponent extends BaseWebComponent {
         }
 
         let props = this.resolveAttributes();
+
+        // Fallback: open the group automatically when its content already contains a selected value
+        // (e.g. page opened from a deep link with a pre-selected refiner), even if the layout template
+        // does not provide the 'data-force-expanded' attribute (custom/edited templates).
+        const hasSelectedValueInContent = /data-selected\s*=\s*["']?true["']?/i.test(contentTemplate || '');
+        const forceExpanded = props.forceExpanded === true || props.forceExpanded === 'true' || hasSelectedValueInContent;
+
         const collapsibleContent = <CollapsibleContentComponent
             {...props}
+            forceExpanded={forceExpanded}
             headerTemplate={headerTemplate}
             contentTemplate={contentTemplate}
             footerTemplate={footerTemplate}

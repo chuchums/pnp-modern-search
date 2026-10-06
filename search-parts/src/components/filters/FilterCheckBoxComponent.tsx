@@ -103,10 +103,19 @@ export class FilterCheckBoxComponent extends React.Component<IFilterCheckBoxProp
 
     private _getTextColor(): string {
         if (this.props.themeVariant?.isInverted) {
-            return this.props.themeVariant?.semanticColors?.bodyText ?? '#323130';
+            return this.props.themeVariant?.semanticColors?.bodyText ?? 'inherit';
         }
 
-        return this.props.themeVariant?.semanticColors?.inputText ?? '#323130';
+        // No usable theme: follow the section text color (white on dark sections)
+        return this.props.themeVariant?.semanticColors?.inputText ?? 'inherit';
+    }
+
+    /**
+     * True when the checkbox is rendered on a dark/colored section (inverted theme)
+     * or when no theme is available. In that case the box and checkmark follow the text color.
+     */
+    private _useTextColorForBox(): boolean {
+        return !this.props.themeVariant?.semanticColors || !!this.props.themeVariant?.isInverted;
     }
 
     private readonly _renderCheckboxLabel = (props?: ICheckboxProps): JSX.Element => {
@@ -230,6 +239,19 @@ export class FilterCheckBoxComponent extends React.Component<IFilterCheckBoxProp
                 styles={{
                     root: {
                         padding: 10,
+                        color: textColor,
+                        selectors: this._useTextColorForBox() ? {
+                            '.ms-Checkbox-checkbox, &:hover .ms-Checkbox-checkbox, &.is-checked .ms-Checkbox-checkbox, &.is-checked:hover .ms-Checkbox-checkbox': {
+                                borderColor: 'currentColor',
+                                background: 'transparent'
+                            },
+                            '.ms-Checkbox-checkmark, &:hover .ms-Checkbox-checkmark, &.is-checked .ms-Checkbox-checkmark': {
+                                color: 'currentColor'
+                            },
+                            '.ms-Checkbox-text, &:hover .ms-Checkbox-text, &.is-checked:hover .ms-Checkbox-text': {
+                                color: 'currentColor'
+                            }
+                        } : undefined
                     },
                     label: {
                         width: '100%'
@@ -279,7 +301,12 @@ export class FilterCheckBoxComponent extends React.Component<IFilterCheckBoxProp
                         disabled: this.props.disabled,
                         styles: {
                             field: {
-                                color: this.props.count && this.props.count === 0 ? this.props.themeVariant?.semanticColors?.disabledText ?? '#a19f9d' : textColor
+                                color: this.props.count && this.props.count === 0 ? this.props.themeVariant?.semanticColors?.disabledText ?? '#a19f9d' : textColor,
+                                selectors: this._useTextColorForBox() ? {
+                                    '::before, :hover::before': { borderColor: 'currentColor' },
+                                    '&.is-checked::after': { borderColor: 'currentColor' },
+                                    '.ms-ChoiceFieldLabel': { color: 'currentColor' }
+                                } : undefined
                             }
                         }
                     }

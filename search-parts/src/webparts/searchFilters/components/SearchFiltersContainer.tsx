@@ -82,6 +82,13 @@ export default class SearchFiltersContainer extends React.Component<ISearchFilte
     private readonly deeplinkQueryStringParam: string;
     private _isUpdatingDeepLink: boolean = false;
     private _lastProcessedDeepLink: string = '';
+
+    /**
+     * Incremented on each getFiltersToDisplay() call (and on deep link restore) so that a stale async pass
+     * (e.g. the initial one started in componentDidMount) cannot overwrite more recent UI filters,
+     * which would lose the deep-linked selection and keep the refiner groups collapsed.
+     */
+    private _filtersToDisplayRequestId: number = 0;
     private _nextUpdateDebugEventId: number = 0;
     private _skipNextUiRefreshFromLocalSelection: boolean = false;
     private readonly _enableUpdateDebugLogging: boolean = false;
@@ -1448,6 +1455,7 @@ export default class SearchFiltersContainer extends React.Component<ISearchFilte
             });
         }
 
+        const requestId = ++this._filtersToDisplayRequestId;
         const updatedFilters: IDataFilterInternal[] = [];
 
         for (const availableFilter of availableFilters) {
@@ -1455,6 +1463,11 @@ export default class SearchFiltersContainer extends React.Component<ISearchFilte
             if (filterResultInternal) {
                 updatedFilters.push(filterResultInternal);
             }
+        }
+
+        // A more recent pass (or a deep link restore) happened meanwhile: drop this stale result.
+        if (requestId !== this._filtersToDisplayRequestId) {
+            return;
         }
 
         const sortStartedAt = performance.now();
@@ -1952,11 +1965,20 @@ export default class SearchFiltersContainer extends React.Component<ISearchFilte
 
                 this._lastProcessedDeepLink = queryString;
 
+                // Invalidate any pending getFiltersToDisplay() pass started before the deep link was read
+                this._filtersToDisplayRequestId++;
+
                 // Update selected filters in the UI
                 this.setState({
                     currentUiFilters: currentUiFilters,
                     submittedFilters: dataFilters
                 }, () => {
+                    // If refiner values are already available, rebuild the display filters right away
+                    // so selected values (and therefore expanded groups) are rendered immediately.
+                    if (this.props.availableFilters && this.props.availableFilters.length > 0) {
+                        this.getFiltersToDisplay(this.props.availableFilters, this.state.currentUiFilters, this.props.filtersConfiguration);
+                    }
+
                     // Update the connected data source only after UI state has been restored.
                     // This prevents a stale getFiltersToDisplay() pass from overwriting deep-link selections on refresh.
                     this.props.onUpdateFilters(dataFilters);
