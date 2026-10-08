@@ -121,17 +121,6 @@
                     </div>
                     <div class="adsA-body">
                         <h3 class="adsA-title">{{slot item @root.slots.Title}}</h3>
-                        {{#if (slot item @root.slots.Tags)}}
-                        <div class="ads-chips">
-                            {{#each (split (slot item @root.slots.Tags) ";") as |tag|}}
-                                {{#with (itemAt (split (trim tag) "|") -1) as |label|}}
-                                    {{#with (itemAt (split label " - ") 0) as |code|}}
-                                        {{#eq code label}}<span class="ads-chip">{{label}}</span>{{else}}<span class="ads-chip ads-chip--code" title="{{label}}">{{code}}</span>{{/eq}}
-                                    {{/with}}
-                                {{/with}}
-                            {{/each}}
-                        </div>
-                        {{/if}}
                         {{#if (slot item @root.slots.Author)}}
                         <div class="ads-author">
                             <img src="/_layouts/15/userphoto.aspx?size=S&username={{getUserEmail (slot item @root.slots.Author)}}" alt="" loading="lazy">

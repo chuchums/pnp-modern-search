@@ -238,6 +238,18 @@ export default class SearchBoxContainer extends React.Component<ISearchBoxContai
                     newUrl = UrlHelper.addOrReplaceQueryStringParam(searchUrl.href, this.props.queryStringParameter, queryText, true);
                 }
 
+                // If the target page is the current page, keep the selected filters (f_* deep link params)
+                // so that the refinements are not lost after the page reload
+                const targetUrl = new URL(newUrl);
+                if (targetUrl.origin === window.location.origin && targetUrl.pathname.toLowerCase() === window.location.pathname.toLowerCase()) {
+                    new URL(window.location.href).searchParams.forEach((value, key) => {
+                        if (key.startsWith('f_') && !targetUrl.searchParams.has(key)) {
+                            targetUrl.searchParams.set(key, value);
+                        }
+                    });
+                    newUrl = targetUrl.href;
+                }
+
                 // Send the query to the new page
                 const behavior = this.props.openBehavior === PageOpenBehavior.NewTab ? '_blank' : '_self';
                 window.open(newUrl, behavior);
