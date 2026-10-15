@@ -63,6 +63,8 @@ import type { AboutPropertyPaneBuilder as AboutPropertyPaneBuilderType } from '.
 import type { ConnectionsPropertyPaneBuilder as ConnectionsPropertyPaneBuilderType } from './propertyPane/ConnectionsPropertyPaneBuilder';
 import { TokenSetter } from './services/TokenSetter';
 import type { StylingPageGroupsBuilder as StylingPageGroupsBuilderType } from './propertyPane/StylingPageGroupsBuilder';
+import type { AdsEnvoiRedactionPropertyPaneBuilder as AdsEnvoiRedactionPropertyPaneBuilderType } from './propertyPane/AdsEnvoiRedactionPropertyPaneBuilder';
+import { DEFAULT_ADS_ENVOI_REDACTION_SETTINGS } from '../../models/common/IAdsEnvoiRedactionSettings';
 
 // Import statements for templates
 import defaultSimpleListTemplate from '../../layouts/resultTypes/default_simple_list.html';
@@ -125,6 +127,7 @@ export default class SearchResultsWebPart extends BaseWebPart<ISearchResultsWebP
     private _dataSourcePropertyPaneBuilderClass: typeof DataSourcePropertyPaneBuilderType = null;
     private _aboutPropertyPaneBuilderClass: typeof AboutPropertyPaneBuilderType = null;
     private _stylingPageGroupsBuilderClass: typeof StylingPageGroupsBuilderType = null;
+    private _adsEnvoiRedactionBuilder: AdsEnvoiRedactionPropertyPaneBuilderType = null;
     private _asyncComboComponent: typeof AsyncComboType = null;
     private _propertyFieldMessage: typeof import('@pnp/spfx-property-controls/lib/PropertyFieldMessage').PropertyFieldMessage = null;
 
@@ -846,6 +849,20 @@ export default class SearchResultsWebPart extends BaseWebPart<ISearchResultsWebP
             );
         }
 
+        // ADS GED – page « Envoi en rédaction »
+        if (this._adsEnvoiRedactionBuilder) {
+            propertyPanePages.push(
+                this._adsEnvoiRedactionBuilder.buildPage(
+                    this.properties.adsEnvoiRedaction,
+                    this.getSelectedProperties(),
+                    this._propertyFieldCollectionData,
+                    this._customCollectionFieldType,
+                    this._asyncComboComponent
+                )
+            );
+            this._adsEnvoiRedactionBuilder.ensureLoaded(this.properties.adsEnvoiRedaction); // asynchrone, rafraîchit le panneau
+        }
+
         // Add about page
         propertyPanePages.push({
             displayGroupsAsAccordion: true,
@@ -858,6 +875,21 @@ export default class SearchResultsWebPart extends BaseWebPart<ISearchResultsWebP
     }
 
     protected async onPropertyPaneFieldChanged(propertyPath: string, oldValue: any, newValue: any): Promise<void> {
+
+        // ADS GED – Envoi en rédaction : rechargement des listes / colonnes
+        if (propertyPath.indexOf('adsEnvoiRedaction.') === 0 && this._adsEnvoiRedactionBuilder) {
+            if (propertyPath === 'adsEnvoiRedaction.configSiteUrl' && oldValue !== newValue) {
+                this.properties.adsEnvoiRedaction.configListId = '';
+                this.properties.adsEnvoiRedaction.redacteursField = '';
+                this.properties.adsEnvoiRedaction.mappings = [];
+                this._adsEnvoiRedactionBuilder.invalidate();
+            }
+            if (propertyPath === 'adsEnvoiRedaction.configListId' && oldValue !== newValue) {
+                this.properties.adsEnvoiRedaction.redacteursField = '';
+                this.properties.adsEnvoiRedaction.mappings = [];
+            }
+            this.context.propertyPane.refresh();
+        }
 
         // Bind connected data sources
         if (propertyPath.localeCompare('filtersDataSourceReference') === 0 && this.properties.filtersDataSourceReference ||
@@ -1361,6 +1393,18 @@ export default class SearchResultsWebPart extends BaseWebPart<ISearchResultsWebP
         );
         this._stylingPageGroupsBuilderClass = StylingPageGroupsBuilder;
 
+        if (!this._adsEnvoiRedactionBuilder) {
+            const { AdsEnvoiRedactionPropertyPaneBuilder } = await import(
+                /* webpackChunkName: 'pnp-modern-search-property-pane' */
+                './propertyPane/AdsEnvoiRedactionPropertyPaneBuilder'
+            );
+            this._adsEnvoiRedactionBuilder = new AdsEnvoiRedactionPropertyPaneBuilder(
+                this.context.spHttpClient,
+                this.context.pageContext.web.absoluteUrl,
+                () => this.context.propertyPane.refresh()
+            );
+        }
+
         const { AsyncCombo } = await import(
             /* webpackChunkName: 'pnp-modern-search-property-pane' */
             '../../controls/PropertyPaneAsyncCombo/components/AsyncCombo'
@@ -1529,6 +1573,12 @@ export default class SearchResultsWebPart extends BaseWebPart<ISearchResultsWebP
         }
 
         this.properties.layoutRenderType = this.properties.layoutRenderType !== undefined ? this.properties.layoutRenderType : LayoutRenderType.Handlebars;
+
+        // ADS GED – Envoi en rédaction : valeurs par défaut
+        this.properties.adsEnvoiRedaction = {
+            ...DEFAULT_ADS_ENVOI_REDACTION_SETTINGS,
+            ...(this.properties.adsEnvoiRedaction || {})
+        };
     }
 
     /**

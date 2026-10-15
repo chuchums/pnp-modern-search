@@ -3,7 +3,7 @@
     "solution": {
         "name": "PnP Modern Search - Search Web Parts - v4",
         "id": "59903278-dd5d-4e9e-bef6-562aae716b8b",
-        "version": "4.23.3.0",
+        "version": "4.23.5.0",
         "includeClientSideAssets": true,
         "skipFeatureDeployment": true,
         "isDomainIsolated": false,
@@ -71,6 +71,10 @@
             {
                 "resource": "Microsoft Graph",
                 "scope": "GroupMember.Read.All"
+            },
+            {
+                "resource": "Microsoft Flow Service",
+                "scope": "User"
             }
         ],
         "metadata": {

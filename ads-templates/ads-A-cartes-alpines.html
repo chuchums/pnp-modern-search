@@ -70,8 +70,10 @@
         .adsA-body .ads-chip--code { order: 1; background: var(--ads-navy); }
         .adsA-body .ads-author { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--adsA-border); }
         .adsA-body .ads-author img { background: #fff; }
-        .adsA-go { position: absolute; right: 14px; bottom: 18px; font-family: var(--ads-display); font-size: 16px; letter-spacing: .06em; color: var(--ads-navy); opacity: 0; transform: translateX(-6px); transition: opacity .2s ease, transform .2s ease; }
-        .adsA-card:hover .adsA-go { opacity: 1; transform: none; }
+        /* Bouton Envoi en rédaction */
+        .adsA-body ads-envoi-redaction:not(:empty) { display: block; margin: -6px -8px 0; }
+        .adsA-body ads-envoi-redaction .ms-Button { height: 30px; color: var(--ads-navy); font-weight: 600; }
+        .adsA-body ads-envoi-redaction .ms-Button-icon { color: var(--ads-navy); }
     </style>
 
     <div class="ads-results">
@@ -121,6 +123,12 @@
                     </div>
                     <div class="adsA-body">
                         <h3 class="adsA-title">{{slot item @root.slots.Title}}</h3>
+                        <!-- Bouton « Envoi en rédaction » : paramétré dans l'onglet « Envoi en rédaction » de la webpart -->
+                        <ads-envoi-redaction
+                            data-config="{{JSONstringify @root.properties.adsEnvoiRedaction}}"
+                            data-item="{{JSONstringify item}}"
+                            data-theme-variant="{{JSONstringify @root.theme}}">
+                        </ads-envoi-redaction>
                         {{#if (slot item @root.slots.Author)}}
                         <div class="ads-author">
                             <img src="/_layouts/15/userphoto.aspx?size=S&username={{getUserEmail (slot item @root.slots.Author)}}" alt="" loading="lazy">
@@ -131,7 +139,6 @@
                         </div>
                         {{/if}}
                     </div>
-                    <span class="adsA-go" aria-hidden="true">Ouvrir →</span>
                 </a>
                 {{/resultTypes}}
             {{/each}}
@@ -223,8 +230,6 @@
         .adsA-body .ads-chip--code { order: 1; background: var(--ads-navy); }
         .adsA-body .ads-author { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--adsA-border); }
         .adsA-body .ads-author img { background: #fff; }
-        .adsA-go { position: absolute; right: 14px; bottom: 18px; font-family: var(--ads-display); font-size: 16px; letter-spacing: .06em; color: var(--ads-navy); opacity: 0; transform: translateX(-6px); transition: opacity .2s ease, transform .2s ease; }
-        .adsA-card:hover .adsA-go { opacity: 1; transform: none; }
     </style>
     <div class="ads-results">
         <div class="ads-head"><span class="ads-skel" style="display:block;width:160px;height:28px"></span></div>

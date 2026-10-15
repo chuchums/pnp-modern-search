@@ -203,25 +203,41 @@ export class SharePointSearchService implements ISharePointSearchService {
     public async getAvailableManagedProperties(): Promise<ISharePointManagedProperty[]> {
 
         let managedProperties: ISharePointManagedProperty[] = [];
-        let searchQuery: ISharePointSearchQuery = {};
 
-        searchQuery.Querytext = '*';
-        searchQuery.Refiners = 'ManagedProperties(filter=50000/0/*,deephits=50000,sort=name/ascending)';
-        searchQuery.RowLimit = 1;
-        searchQuery.SortList = [{
-            Property: "[DocId]",
-            Direction: SortDirection.Ascending
-        }];
+        // Certains tenants refusent (HTTP 400) la requête complète : on retente avec des variantes plus légères.
+        const attempts: ISharePointSearchQuery[] = [
+            {
+                Querytext: '*',
+                Refiners: 'ManagedProperties(filter=50000/0/*,deephits=50000,sort=name/ascending)',
+                RowLimit: 1,
+                SortList: [{ Property: "[DocId]", Direction: SortDirection.Ascending }]
+            },
+            {
+                Querytext: '*',
+                Refiners: 'ManagedProperties(filter=5000/0/*,sort=name/ascending)',
+                RowLimit: 1
+            },
+            {
+                Querytext: '*',
+                Refiners: 'ManagedProperties(filter=600/0/*)',
+                RowLimit: 1
+            }
+        ];
 
         try {
 
-            const response = await this.spHttpClient.post(this.searchEndpointUrl, SPHttpClient.configurations.v1, {
-                body: this.getRequestPayload(searchQuery),
-                headers: {
-                    'odata-version': '3.0',
-                    'accept': 'application/json;odata=nometadata'
-                }
-            });
+            let response = null;
+            for (const searchQuery of attempts) {
+                response = await this.spHttpClient.post(this.searchEndpointUrl, SPHttpClient.configurations.v1, {
+                    body: this.getRequestPayload(searchQuery),
+                    headers: {
+                        'odata-version': '3.0',
+                        'accept': 'application/json;odata=nometadata'
+                    }
+                });
+                if (response.ok) break;
+                Log.warn("[SharePointSearchService.getAvailableManagedProperties()]", `Refiners '${searchQuery.Refiners}' rejected (${response.status}), trying next variant`, this.serviceScope);
+            }
 
             if (response.ok) {
 
@@ -240,7 +256,7 @@ export class SharePointSearchService implements ISharePointSearchService {
                 });
             }
             } else {
-                throw new Error(`${response['statusMessage']}`);
+                throw new Error(`HTTP ${response.status} ${response.statusText || ''}`);
             }
 
         } catch (error) {

@@ -6,6 +6,7 @@ import { DynamicProperty } from "@microsoft/sp-component-base";
 import { IExtensibilityConfiguration } from "../../models/common/IExtensibilityConfiguration";
 import { IItemSelectionProps } from "../../models/common/IItemSelectionProps";
 import { IQueryModifierConfiguration } from "../../queryModifier/IQueryModifierConfiguration";
+import { IAdsEnvoiRedactionSettings } from "../../models/common/IAdsEnvoiRedactionSettings";
 
 export enum QueryTextSource {
     StaticValue,
@@ -224,5 +225,10 @@ export default interface ISearchResultsWebPartProps extends IBaseWebPartProps {
    * Results panel border thickness in pixels
    */
   resultsBorderThickness?: number;
+
+  /**
+   * ADS GED – paramétrage du bouton « Envoi en rédaction »
+   */
+  adsEnvoiRedaction?: IAdsEnvoiRedactionSettings;
 }
 

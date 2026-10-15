@@ -858,7 +858,14 @@ export class SharePointSearchDataSource extends BaseDataSource<ISharePointSearch
 
     private async getAvailableProperties(): Promise<IComboBoxOption[]> {
 
-        const searchManagedProperties = await this._sharePointSearchService.getAvailableManagedProperties();
+        let searchManagedProperties: { name: string }[] = [];
+        try {
+            searchManagedProperties = await this._sharePointSearchService.getAvailableManagedProperties();
+        } catch (error) {
+            // Liste indisponible (ex : HTTP 400 sur ce tenant) : on garde la saisie libre utilisable
+            // en proposant au moins les propriétés déjà sélectionnées.
+            searchManagedProperties = (this.properties.selectedProperties || []).filter(p => !!p).map(p => ({ name: p }));
+        }
 
         this._availableManagedProperties = searchManagedProperties.map(managedProperty => {
             return {
