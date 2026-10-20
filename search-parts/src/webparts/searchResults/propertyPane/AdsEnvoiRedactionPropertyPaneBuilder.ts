@@ -147,7 +147,7 @@ export class AdsEnvoiRedactionPropertyPaneBuilder {
                 }),
                 PropertyPaneTextField(`${ROOT}.flowTriggerUri`, {
                     label: 'URL de déclenchement « logicflows » (optionnel)',
-                    description: 'Ex : https://europe-001.azure-apim.net/apim/logicflows/<ID>/triggers/manual/run. Visible dans l\'onglet Réseau lors d\'un « Tester » du flux. Vide = découverte automatique.',
+                    description: '⚠ Laisser vide en production : cette URL est propre à chaque utilisateur (suffixe après l\'Id du flux) et est découverte automatiquement. À renseigner uniquement pour un test avec votre propre compte.',
                     value: settings.flowTriggerUri,
                     disabled: !enabled
                 }),

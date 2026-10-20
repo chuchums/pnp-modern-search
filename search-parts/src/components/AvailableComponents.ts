@@ -28,6 +28,7 @@ import { SortWebComponent } from './SortComponent';
 import { DownloadSelectedItemsButtonWebComponent } from './DownloadSelectedItemsButtonComponent';
 import { FilterHierarchicalWebComponent } from './filters/FilterHierarchicalComponent';
 import { AdsEnvoiRedactionWebComponent } from './AdsEnvoiRedactionComponent';
+import { AdsDetailDocumentWebComponent } from './AdsDetailDocumentComponent';
 
 export class AvailableComponents {
 
@@ -150,6 +151,10 @@ export class AvailableComponents {
         {
             componentName: "ads-envoi-redaction",
             componentClass: AdsEnvoiRedactionWebComponent
+        },
+        {
+            componentName: "ads-detail-document",
+            componentClass: AdsDetailDocumentWebComponent
         }
     ];
 }

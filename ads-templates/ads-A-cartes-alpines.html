@@ -74,6 +74,10 @@
         .adsA-body ads-envoi-redaction:not(:empty) { display: block; margin: -6px -8px 0; }
         .adsA-body ads-envoi-redaction .ms-Button { height: 30px; color: var(--ads-navy); font-weight: 600; }
         .adsA-body ads-envoi-redaction .ms-Button-icon { color: var(--ads-navy); }
+        /* Bouton Détail (icône) */
+        .adsA-card > ads-detail-document { position: absolute; top: 8px; right: 8px; z-index: 2; }
+        .adsA-card > ads-detail-document .ms-Button { width: 32px; height: 32px; border-radius: 50%; color: var(--ads-navy); background: rgba(255,255,255,.92); box-shadow: 0 2px 6px rgba(0,43,92,.25); }
+        .adsA-card > ads-detail-document .ms-Button:hover { background: #fff; color: var(--ads-navy-2); }
     </style>
 
     <div class="ads-results">
@@ -113,6 +117,11 @@
             {{#each data.items as |item|}}
                 {{#> resultTypes item=item}}
                 <a class="adsA-card" href="{{slot item @root.slots.PreviewUrl}}" target="_blank" rel="noopener" data-interception="off">
+                    <!-- Bouton « Détail » : propriétés du document dans un panneau latéral -->
+                    <ads-detail-document
+                        data-item="{{JSONstringify item}}"
+                        data-theme-variant="{{JSONstringify @root.theme}}">
+                    </ads-detail-document>
                     <div class="adsA-thumb">
                         {{#if (slot item @root.slots.PreviewImageUrl)}}
                             <img src="{{slot item @root.slots.PreviewImageUrl}}" alt="" loading="lazy">
@@ -129,12 +138,12 @@
                             data-item="{{JSONstringify item}}"
                             data-theme-variant="{{JSONstringify @root.theme}}">
                         </ads-envoi-redaction>
-                        {{#if (slot item @root.slots.Author)}}
+                        {{#if item.EditorOWSUSER}}
                         <div class="ads-author">
-                            <img src="/_layouts/15/userphoto.aspx?size=S&username={{getUserEmail (slot item @root.slots.Author)}}" alt="" loading="lazy">
+                            <img src="/_layouts/15/userphoto.aspx?size=S&username={{getUserEmail item.EditorOWSUSER}}" alt="" loading="lazy">
                             <span>
-                                <strong>{{#with (split (slot item @root.slots.Author) " | ") as |a|}}{{#if (itemAt a 1)}}{{itemAt a 1}}{{else}}{{itemAt a 0}}{{/if}}{{/with}}</strong>
-                                {{getDate (slot item @root.slots.Date) 'LL'}}
+                                <strong>{{#with (split item.EditorOWSUSER " | ") as |a|}}{{#if (itemAt a 1)}}{{itemAt a 1}}{{else}}{{itemAt a 0}}{{/if}}{{/with}}</strong>
+                                {{#if item.LastModifiedTime}}Modifié le {{getDate item.LastModifiedTime 'LL'}}{{/if}}
                             </span>
                         </div>
                         {{/if}}

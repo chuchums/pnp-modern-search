@@ -70,6 +70,10 @@
         .adsC-body .ads-author strong { color: #fff; }
         .adsC-tile:hover .ads-author, .adsC-tile:focus-visible .ads-author { max-height: 48px; opacity: 1; }
         @media (hover: none) { .adsC-body .ads-author { max-height: none; opacity: 1; } }
+        /* Bouton Détail (icône) */
+        .adsC-tile > ads-detail-document { position: absolute; top: 10px; right: 10px; z-index: 2; }
+        .adsC-tile > ads-detail-document .ms-Button { width: 32px; height: 32px; border-radius: 50%; color: var(--ads-navy); background: rgba(255,255,255,.92); }
+        .adsC-tile > ads-detail-document .ms-Button:hover { background: #fff; color: var(--ads-navy-2); }
     </style>
 
     <div class="ads-results">
@@ -109,6 +113,11 @@
             {{#each data.items as |item|}}
                 {{#> resultTypes item=item}}
                 <a class="adsC-tile" href="{{slot item @root.slots.PreviewUrl}}" target="_blank" rel="noopener" data-interception="off">
+                    <!-- Bouton « Détail » : propriétés du document dans un panneau latéral -->
+                    <ads-detail-document
+                        data-item="{{JSONstringify item}}"
+                        data-theme-variant="{{JSONstringify @root.theme}}">
+                    </ads-detail-document>
                     {{#if (slot item @root.slots.PreviewImageUrl)}}
                             <img src="{{slot item @root.slots.PreviewImageUrl}}" alt="" loading="lazy">
                         {{else}}
@@ -128,12 +137,12 @@
                             {{/each}}
                         </div>
                         {{/if}}
-                        {{#if (slot item @root.slots.Author)}}
+                        {{#if item.EditorOWSUSER}}
                         <div class="ads-author">
-                            <img src="/_layouts/15/userphoto.aspx?size=S&username={{getUserEmail (slot item @root.slots.Author)}}" alt="" loading="lazy">
+                            <img src="/_layouts/15/userphoto.aspx?size=S&username={{getUserEmail item.EditorOWSUSER}}" alt="" loading="lazy">
                             <span>
-                                <strong>{{#with (split (slot item @root.slots.Author) " | ") as |a|}}{{#if (itemAt a 1)}}{{itemAt a 1}}{{else}}{{itemAt a 0}}{{/if}}{{/with}}</strong>
-                                {{getDate (slot item @root.slots.Date) 'LL'}}
+                                <strong>{{#with (split item.EditorOWSUSER " | ") as |a|}}{{#if (itemAt a 1)}}{{itemAt a 1}}{{else}}{{itemAt a 0}}{{/if}}{{/with}}</strong>
+                                {{#if item.LastModifiedTime}}Modifié le {{getDate item.LastModifiedTime 'LL'}}{{/if}}
                             </span>
                         </div>
                         {{/if}}
