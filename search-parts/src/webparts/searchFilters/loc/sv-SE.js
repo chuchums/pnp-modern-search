@@ -55,7 +55,8 @@ define([], function () {
                     DateIntervalTemplate: "Datumintervall (fasta intervall)",
                     PeopleTemplate: "Person mall",
                     TaxonomyPickerTemplate: "Taxonomiväljare",
-                    HierarchicalFilterTemplate: "Hierarkiskt filter"
+                    HierarchicalFilterTemplate: "Hierarkiskt filter",
+                    BooleanFilterTemplate: "Toggle (Yes/No)"
                 },
                 SortBy: "Sorteringsordning",
                 SortDirection: "Sorteringsriktning",

@@ -55,7 +55,8 @@ define([], function () {
                     DateIntervalTemplate: "Ajankohtarajaus (esim. viime kuussa)",
                     PeopleTemplate: "Henkilö malli",
                     TaxonomyPickerTemplate: "Taksonomiavalinta",
-                    HierarchicalFilterTemplate: "Hierarkkinen suodatin"
+                    HierarchicalFilterTemplate: "Hierarkkinen suodatin",
+                    BooleanFilterTemplate: "Toggle (Yes/No)"
                 },
                 SortBy: "Lajitteluperuste",
                 SortDirection: "Lajittelun suunta",

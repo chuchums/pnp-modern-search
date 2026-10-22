@@ -7,7 +7,8 @@ export enum BuiltinFilterTemplates {
     People = 'PeopleTemplate',
     DateInterval = 'DateIntervalFilterTemplate',
     TaxonomyPicker = 'TaxonomyPickerFilterTemplate',
-    Hierarchical = 'HierarchicalFilterTemplate'
+    Hierarchical = 'HierarchicalFilterTemplate',
+    Boolean = 'BooleanFilterTemplate'
 }
 
 /**
@@ -19,6 +20,7 @@ export const BuiltinFilterTypes = {
     [BuiltinFilterTemplates.ComboBox]: FilterType.Refiner,
     [BuiltinFilterTemplates.People]: FilterType.Refiner,
     [BuiltinFilterTemplates.Hierarchical]: FilterType.Refiner,
+    [BuiltinFilterTemplates.Boolean]: FilterType.Refiner,
     [BuiltinFilterTemplates.DateRange]: FilterType.StaticFilter,
     [BuiltinFilterTemplates.TaxonomyPicker]: FilterType.StaticFilter
 };

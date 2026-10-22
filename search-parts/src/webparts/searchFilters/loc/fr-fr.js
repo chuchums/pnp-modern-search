@@ -57,7 +57,8 @@ define([], function () {
                     DateIntervalTemplate: "Intervalle de dates",
                     PeopleTemplate: "Modèle de personne",
                     TaxonomyPickerTemplate: "Sélecteur de taxonomie",
-                    HierarchicalFilterTemplate: "Filtre hiérarchique"
+                    HierarchicalFilterTemplate: "Filtre hiérarchique",
+                    BooleanFilterTemplate: "Interrupteur (Oui/Non)"
                 },
                 SortBy: "Trier les valeurs par",
                 SortDirection: "Sens de tri",

@@ -55,7 +55,8 @@ define([], function () {
                     DateIntervalTemplate: "Časový interval",
                     PeopleTemplate: "Šablona pro osoby",
                     TaxonomyPickerTemplate: "Výběr taxonomie",
-                    HierarchicalFilterTemplate: "Hierarchický filtr"
+                    HierarchicalFilterTemplate: "Hierarchický filtr",
+                    BooleanFilterTemplate: "Toggle (Yes/No)"
                 },
                 SortBy: "Řadit hodnoty podle",
                 SortDirection: "Směr řazení",

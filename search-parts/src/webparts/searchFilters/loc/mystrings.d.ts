@@ -57,6 +57,7 @@ declare interface ISearchFiltersWebPartStrings {
                 DateIntervalTemplate: string;
                 TaxonomyPickerTemplate: string;
                 HierarchicalFilterTemplate: string;
+                BooleanFilterTemplate: string;
             },
             SortBy: string;
             SortDirection: string;

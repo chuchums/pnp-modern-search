@@ -55,7 +55,8 @@ define([], function () {
                     DateIntervalTemplate: "Datointerval",
                     PeopleTemplate: "Personskabelon",
                     TaxonomyPickerTemplate: "Taksonomivælger",
-                    HierarchicalFilterTemplate: "Hierarkisk filter"
+                    HierarchicalFilterTemplate: "Hierarkisk filter",
+                    BooleanFilterTemplate: "Toggle (Yes/No)"
                 },
                 SortBy: "Sortér værdier efter",
                 SortDirection: "Sortér efter retning",

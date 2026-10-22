@@ -566,7 +566,8 @@ export default class SearchFiltersWebPart extends BaseWebPart<ISearchFiltersWebP
             const nextConfigurations = newValue as IHierarchicalFilterConfiguration[];
             this.properties.filtersConfiguration = nextConfigurations.map(configuration => {
                 if (configuration.selectedTemplate === BuiltinFilterTemplates.DateRange
-                    || configuration.selectedTemplate === BuiltinFilterTemplates.DateInterval) {
+                    || configuration.selectedTemplate === BuiltinFilterTemplates.DateInterval
+                    || configuration.selectedTemplate === BuiltinFilterTemplates.Boolean) {
                     configuration.isMulti = false;
                     configuration.operator = FilterConditionOperator.AND;
                 }
@@ -995,6 +996,10 @@ export default class SearchFiltersWebPart extends BaseWebPart<ISearchFiltersWebP
                             {
                                 key: BuiltinFilterTemplates.Hierarchical,
                                 text: webPartStrings.PropertyPane.DataFilterCollection.Templates.HierarchicalFilterTemplate
+                            },
+                            {
+                                key: BuiltinFilterTemplates.Boolean,
+                                text: webPartStrings.PropertyPane.DataFilterCollection.Templates.BooleanFilterTemplate
                             }
                         ]
                     },
@@ -1007,8 +1012,8 @@ export default class SearchFiltersWebPart extends BaseWebPart<ISearchFiltersWebP
                         onCustomRender: (field, value, onUpdate, item: IDataFilterConfiguration, itemId) => {
                             return React.createElement("div", { key: `${field.id}-${itemId}` },
                                 React.createElement(Checkbox, {
-                                    defaultChecked: item.selectedTemplate === BuiltinFilterTemplates.ComboBox ? false : item.expandByDefault,
-                                    disabled: item.selectedTemplate === BuiltinFilterTemplates.ComboBox,
+                                    defaultChecked: item.selectedTemplate === BuiltinFilterTemplates.ComboBox || item.selectedTemplate === BuiltinFilterTemplates.Boolean ? false : item.expandByDefault,
+                                    disabled: item.selectedTemplate === BuiltinFilterTemplates.ComboBox || item.selectedTemplate === BuiltinFilterTemplates.Boolean,
                                     onChange: (ev, checked: boolean) => {
                                         onUpdate(field.id, checked);
                                     }
@@ -1041,8 +1046,8 @@ export default class SearchFiltersWebPart extends BaseWebPart<ISearchFiltersWebP
                         onCustomRender: (field, value, onUpdate, item: IDataFilterConfiguration, itemId) => {
                             return React.createElement("div", { key: `${field.id}-${itemId}` },
                                 React.createElement(Checkbox, {
-                                    defaultChecked: item.selectedTemplate === BuiltinFilterTemplates.DateRange || item.selectedTemplate === BuiltinFilterTemplates.DateInterval ? false : item.isMulti,
-                                    disabled: item.selectedTemplate === BuiltinFilterTemplates.DateRange || item.selectedTemplate === BuiltinFilterTemplates.DateInterval,
+                                    defaultChecked: item.selectedTemplate === BuiltinFilterTemplates.DateRange || item.selectedTemplate === BuiltinFilterTemplates.DateInterval || item.selectedTemplate === BuiltinFilterTemplates.Boolean ? false : item.isMulti,
+                                    disabled: item.selectedTemplate === BuiltinFilterTemplates.DateRange || item.selectedTemplate === BuiltinFilterTemplates.DateInterval || item.selectedTemplate === BuiltinFilterTemplates.Boolean,
                                     onChange: (ev, checked: boolean) => {
                                         onUpdate(field.id, checked);
                                     }
@@ -1098,7 +1103,7 @@ export default class SearchFiltersWebPart extends BaseWebPart<ISearchFiltersWebP
                                                 text: webPartStrings.PropertyPane.DataFilterCollection.SortByCount
                                             },
                                         ],
-                                        disabled: currentItem.selectedTemplate === BuiltinFilterTemplates.DateRange || currentItem.selectedTemplate === BuiltinFilterTemplates.DateInterval || currentItem.selectedTemplate === BuiltinFilterTemplates.Hierarchical,
+                                        disabled: currentItem.selectedTemplate === BuiltinFilterTemplates.DateRange || currentItem.selectedTemplate === BuiltinFilterTemplates.DateInterval || currentItem.selectedTemplate === BuiltinFilterTemplates.Hierarchical || currentItem.selectedTemplate === BuiltinFilterTemplates.Boolean,
                                         defaultSelectedKey: item.sortBy,
                                         onChange: (ev, option) => onUpdate(field.id, option.key),
                                     } as IDropdownProps)
@@ -1126,7 +1131,7 @@ export default class SearchFiltersWebPart extends BaseWebPart<ISearchFiltersWebP
                                                 text: webPartStrings.PropertyPane.DataFilterCollection.SortDescending
                                             },
                                         ],
-                                        disabled: currentItem.selectedTemplate === BuiltinFilterTemplates.DateRange || currentItem.selectedTemplate === BuiltinFilterTemplates.DateInterval || currentItem.selectedTemplate === BuiltinFilterTemplates.Hierarchical,
+                                        disabled: currentItem.selectedTemplate === BuiltinFilterTemplates.DateRange || currentItem.selectedTemplate === BuiltinFilterTemplates.DateInterval || currentItem.selectedTemplate === BuiltinFilterTemplates.Hierarchical || currentItem.selectedTemplate === BuiltinFilterTemplates.Boolean,
                                         defaultSelectedKey: item.sortDirection,
                                         onChange: (ev, option) => onUpdate(field.id, option.key),
                                     } as IDropdownProps)

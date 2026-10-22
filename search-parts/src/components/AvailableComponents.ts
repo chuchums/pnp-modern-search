@@ -27,6 +27,7 @@ import { SpoPathBreadcrumbWebComponent } from './SpoPathBreadcrumbComponent';
 import { SortWebComponent } from './SortComponent';
 import { DownloadSelectedItemsButtonWebComponent } from './DownloadSelectedItemsButtonComponent';
 import { FilterHierarchicalWebComponent } from './filters/FilterHierarchicalComponent';
+import { FilterBooleanWebComponent } from './filters/FilterBooleanComponent';
 import { AdsEnvoiRedactionWebComponent } from './AdsEnvoiRedactionComponent';
 import { AdsDetailDocumentWebComponent } from './AdsDetailDocumentComponent';
 
@@ -147,6 +148,10 @@ export class AvailableComponents {
         {
             componentName: "pnp-filterhierarchical",
             componentClass: FilterHierarchicalWebComponent
+        },
+        {
+            componentName: "pnp-filterboolean",
+            componentClass: FilterBooleanWebComponent
         },
         {
             componentName: "ads-envoi-redaction",

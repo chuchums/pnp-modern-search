@@ -57,7 +57,8 @@ define([], function () {
                     DateIntervalTemplate: "Date interval",
                     PeopleTemplate: "People Template",
                     TaxonomyPickerTemplate: "Taxonomy picker",
-                    HierarchicalFilterTemplate: "Hierarchical filter"
+                    HierarchicalFilterTemplate: "Hierarchical filter",
+                    BooleanFilterTemplate: "Toggle (Yes/No)"
                 },
                 SortBy: "Sort values by",
                 SortDirection: "Sort direction",
